@@ -1,22 +1,12 @@
-import clsx from 'clsx';
+import H1 from '@/components/Header';
+//Quando for usar componentes clients procurar jogar o mais para fora possivel da sua aplicação
+//page.tsx (server) -> menu.tsx (server) -> link (client)
 
-export default function Homepage() {
+export default async function Homepage() {
+  console.log('Server');
   return (
     <div>
-      <h1
-        className={clsx(
-          'text-6xl',
-          'font-bold',
-          'text-blue-500',
-          'hover:text-white',
-          'hover:bg-blue-500',
-          'transition',
-          'duration-300',
-          'text-blog',
-        )}
-      >
-        Texto no meu h1
-      </h1>
+      <H1></H1>
     </div>
   );
 }
