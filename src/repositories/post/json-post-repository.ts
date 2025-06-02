@@ -13,7 +13,13 @@ const JSON_POSTS_FILE_PATH = resolve(
   'posts.json',
 );
 
+const SIMULATE_WAIT_IN_MS = 5000;
+
 export class JsonPostRepository implements PostRepository {
+  private async sumulateWait() {
+    if (SIMULATE_WAIT_IN_MS <= 0) return;
+    await new Promise(resolve => setTimeout(resolve, SIMULATE_WAIT_IN_MS));
+  }
   //método privado só é enchegado pela classe
   private async readFromDisk(): Promise<PostModel[]> {
     const jsonContent = await readFile(JSON_POSTS_FILE_PATH, 'utf-8');
@@ -23,11 +29,13 @@ export class JsonPostRepository implements PostRepository {
   }
   //método do contrato com PostRepository, obrigatório a implementação para o contrato
   async findAll(): Promise<PostModel[]> {
+    await this.sumulateWait();
     const posts = await this.readFromDisk();
     return posts;
   }
 
   async findById(id: string): Promise<PostModel> {
+    await this.sumulateWait();
     const posts = await this.findAll();
     const post = posts.find(post => post.id === id);
 
@@ -37,7 +45,6 @@ export class JsonPostRepository implements PostRepository {
   }
 }
 //exportação da instancia.
-
 
 //postRepository.findAll().then(jsonContent => console.log(jsonContent));
 // (async () => {
