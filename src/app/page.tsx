@@ -2,6 +2,7 @@
 //page.tsx (server) -> menu.tsx (server) -> link (client)
 
 import { Container } from '@/components/Container';
+import Header from '@/components/Header';
 import { PostsList } from '@/components/PostsList';
 import { SpinLoader } from '@/components/SpinLoader';
 import { Suspense } from 'react';
@@ -12,25 +13,7 @@ export default async function Homepage() {
     mx-auto = centraliza a div colocando margin dos 2 lados automatico. */
 
     <Container>
-      <header>
-        <h1 className='text-6xl font-bold text-center py-8'>Aqui é a HEADER</h1>
-        <p className='text-justify'>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque
-          impedit id distinctio tempora asperiores eos alias magni nesciunt,
-          voluptates assumenda iste aperiam deleniti dolor repellendus quia
-          delectus quas unde ullam. Lorem ipsum, dolor sit amet consectetur
-          adipisicing elit. Cumque impedit id distinctio tempora asperiores eos
-          alias magni nesciunt, voluptates assumenda iste aperiam deleniti dolor
-          repellendus quia delectus quas unde ullam. Lorem ipsum, dolor sit amet
-          consectetur adipisicing elit. Cumque impedit id distinctio tempora
-          asperiores eos alias magni nesciunt, voluptates assumenda iste aperiam
-          deleniti dolor repellendus quia delectus quas unde ullam. Lorem ipsum,
-          dolor sit amet consectetur adipisicing elit. Cumque impedit id
-          distinctio tempora asperiores eos alias magni nesciunt, voluptates
-          assumenda iste aperiam deleniti dolor repellendus quia delectus quas
-          unde ullam.
-        </p>
-      </header>
+      <Header></Header>
       <Suspense fallback={<SpinLoader />}>
         <PostsList />
       </Suspense>
