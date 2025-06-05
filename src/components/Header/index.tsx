@@ -1,6 +1,7 @@
 //'use client'; // transforma o componente em componente do lado do cliente
 
 import clsx from 'clsx';
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -13,7 +14,7 @@ export default function Header() {
           'lg:text-7xl/normal lg:font-extrabold lg:py-12',
         )}
       >
-        <a href='#'>The Blog</a>
+        <Link href='#'>The Blog</Link>
       </h1>
     </header>
   );
