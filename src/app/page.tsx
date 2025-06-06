@@ -31,18 +31,34 @@ export default async function Homepage() {
           href='#'
         >
           <Image
-            className={clsx('group-hover:scale-105 transition')}
+            className={clsx(
+              'group-hover:scale-105 transition',
+              'w-full h-full',
+              'object-cover object-center',
+            )}
             src='/images/bryen_0.png'
             width={1200}
             height={720}
             alt='Título do post'
+            priority
           ></Image>
         </Link>
-        <div>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae quia
-          iste architecto, fugiat esse nobis quos, eveniet debitis et dolore
-          consequuntur rerum excepturi, amet magni harum soluta ipsam velit
-          commodi?
+        <div className={clsx('flex flex-col gap-4', 'sm:justify-between')}>
+          <time
+            className={clsx('text-slate-600 block text-sm/tight')}
+            dateTime='2025-04-20'
+          >
+            20/04/2025 10:00
+          </time>
+          <h1 className={clsx('text-2xl/tight font-extrabold sm:text-4xl')}>
+            <Link href='#'>Aqui vai o link do post</Link>
+          </h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae quia
+            iste architecto, fugiat esse nobis quos, eveniet debitis et dolore
+            consequuntur rerum excepturi, amet magni harum soluta ipsam velit
+            commodi?
+          </p>
         </div>
       </section>
       <Suspense fallback={<SpinLoader />}>
