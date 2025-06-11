@@ -5,15 +5,17 @@ import { PostHeading } from '../PostHeading';
 
 export async function PostsList() {
   const posts = await postRepository.findAll();
+
   return (
     <div
       className={clsx('grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-8')}
     >
       {posts.map(post => {
+        const postLink = `/posts/${post.slug}`;
         return (
           <div className={clsx('flex flex-col group gap-4')} key={post.id}>
             <PostCoverImage
-              linkProps={{ href: `/posts/${post.slug}` }}
+              linkProps={{ href: postLink }}
               imageProps={{
                 width: 1200,
                 height: 720,
@@ -28,7 +30,7 @@ export async function PostsList() {
               >
                 {post.createdAt}
               </time>
-              <PostHeading as='h2' url='#'>
+              <PostHeading as='h2' url={postLink}>
                 {post.title}
               </PostHeading>
               <p>{post.excerpt}</p>
