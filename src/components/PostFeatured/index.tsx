@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { PostCoverImage } from '../PostCoverImage';
-import { PostHeading } from '../PostHeading';
+import { PostSummary } from '../PostSummury';
 
 export function PostFeatured() {
   const slug = 'featured-post';
@@ -24,23 +24,16 @@ export function PostFeatured() {
           alt: 'Título do post',
         }}
       />
-      <div className={clsx('flex flex-col gap-4', 'sm:justify-between')}>
-        <time
-          className={clsx('text-slate-600 block text-sm/tight')}
-          dateTime='2025-04-20'
-        >
-          20/04/2025 10:00
-        </time>
-        <PostHeading as='h1' url={postLink}>
-          Aqui vai o link do post
-        </PostHeading>
-        <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae quia
-          iste architecto, fugiat esse nobis quos, eveniet debitis et dolore
-          consequuntur rerum excepturi, amet magni harum soluta ipsam velit
-          commodi?
-        </p>
-      </div>
+
+      <PostSummary
+        postHeading={'h1'}
+        postLink={postLink}
+        createdAt={'2025-06-12T00:24:38.616Z'}
+        title={'Dicas para manter a saúde mental em dia'}
+        excerpt={
+          'Em vez de configurar tudo manualmente, basta criar um arquivo com o nome certo e o Next.js entende que aquilo representa uma página.'
+        }
+      />
     </section>
   );
 }
