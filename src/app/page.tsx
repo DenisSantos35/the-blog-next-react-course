@@ -1,26 +1,23 @@
 //Quando for usar componentes clients procurar jogar o mais para fora possivel da sua aplicação
 //page.tsx (server) -> menu.tsx (server) -> link (client)
 
-import { Container } from '@/components/Container';
-import Header from '@/components/Header';
 import { PostFeatured } from '@/components/PostFeatured';
 import { PostsList } from '@/components/PostsList';
 import { SpinLoader } from '@/components/SpinLoader';
 import { Suspense } from 'react';
 
+// export const metadata: Metadata = {
+//   title: 'The blog',
+//   description: 'Essa seria a descrição dessa página==',
+// };
+
 export default async function Homepage() {
   return (
-    /*CONTAINER QUE REPRESENTA A TELA
-    mx-auto = centraliza a div colocando margin dos 2 lados automatico. */
-    <Container>
-      <Header />
+    <>
       <PostFeatured />
       <Suspense fallback={<SpinLoader />}>
         <PostsList />
       </Suspense>
-      <footer>
-        <p className='text-6xl font-bold text-center py-8'>Aqui é o footer</p>
-      </footer>
-    </Container>
+    </>
   );
 }
