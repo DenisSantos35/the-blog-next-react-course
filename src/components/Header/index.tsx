@@ -14,7 +14,7 @@ export default function Header() {
           'lg:text-7xl/normal lg:font-extrabold lg:py-12',
         )}
       >
-        <Link href='#'>The Blog</Link>
+        <Link href='/'>The Blog</Link>
       </h1>
     </header>
   );

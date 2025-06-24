@@ -8,7 +8,9 @@ export async function PostsList() {
 
   return (
     <div
-      className={clsx('grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-8')}
+      className={clsx(
+        'grid grid-cols-1 mb-16 sm:grid-cols-2 lg:grid-cols-3 gap-8',
+      )}
     >
       {posts.slice(1).map(post => {
         const postLink = `/posts/${post.slug}`;
