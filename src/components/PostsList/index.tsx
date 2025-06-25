@@ -1,10 +1,10 @@
 import { PostCoverImage } from '../PostCoverImage';
 import clsx from 'clsx';
 import { PostSummary } from '../PostSummury';
-import { findAllPublicPosts } from '@/lib/post/queries';
+import { findAllPublicPostsCached } from '@/lib/post/queries';
 
 export async function PostsList() {
-  const posts = await findAllPublicPosts();
+  const posts = await findAllPublicPostsCached();
 
   return (
     <div
@@ -13,7 +13,7 @@ export async function PostsList() {
       )}
     >
       {posts.slice(1).map(post => {
-        const postLink = `/posts/${post.slug}`;
+        const postLink = `/post/${post.slug}`;
         return (
           <div className={clsx('flex flex-col group gap-4')} key={post.id}>
             <PostCoverImage

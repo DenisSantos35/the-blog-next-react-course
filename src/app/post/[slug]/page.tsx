@@ -1,4 +1,5 @@
-import clsx from 'clsx';
+import { findPostBySlugCached } from '@/lib/post/queries';
+import { notFound } from 'next/navigation';
 
 type PostSlugPageProps = {
   params: Promise<{ slug: string }>;
@@ -6,5 +7,20 @@ type PostSlugPageProps = {
 
 export default async function PostSlugPage({ params }: PostSlugPageProps) {
   const { slug } = await params;
-  return <h1 className={clsx('text-7xl font-extrabold py-16')}>{slug}</h1>;
+
+  let post;
+
+  try {
+    post = await findPostBySlugCached(slug);
+  } catch {
+    post = undefined;
+  }
+
+  if (!post) notFound();
+
+  return (
+    <div>
+      <p>{post.title}</p>
+    </div>
+  );
 }
