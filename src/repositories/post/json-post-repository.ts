@@ -13,7 +13,7 @@ const JSON_POSTS_FILE_PATH = resolve(
   'posts.json',
 );
 
-const SIMULATE_WAIT_IN_MS = 5000;
+const SIMULATE_WAIT_IN_MS = 0;
 
 export class JsonPostRepository implements PostRepository {
   private async simulateWait() {
