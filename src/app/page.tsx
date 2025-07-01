@@ -13,6 +13,7 @@ import { Suspense } from 'react';
 // };
 
 export default async function Homepage() {
+  //throw new Error('Erro de teste na página inicial');
   return (
     <>
       <Suspense fallback={<SpinLoader className={clsx('min-h-20 mb-16')} />}>
