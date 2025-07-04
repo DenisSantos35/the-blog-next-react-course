@@ -1,4 +1,4 @@
-import { formatDateTime, formatDistanceToNow } from '@/format-datetime';
+import { formatDateTime, formatDistanceToNow } from '@/utils/format-datetime';
 import clsx from 'clsx';
 
 type PostDateProps = {
