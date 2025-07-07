@@ -1,11 +1,11 @@
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { title } from 'process';
 
 // Dentro do schema criamos primeiro nossa tabela
 export const postTable = sqliteTable('posts', {
   id: text('id').primaryKey(),
   slug: text('slug').notNull().unique(),
+  title: text('title').notNull(),
   author: text('author').notNull(),
   excerpt: text('excerpt').notNull(),
   content: text('content').notNull(),
