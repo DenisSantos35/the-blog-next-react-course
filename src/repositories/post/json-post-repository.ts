@@ -55,6 +55,15 @@ export class JsonPostRepository implements PostRepository {
 
     return post;
   }
+
+  //metodo que busca todos os dados do json
+  async findAll(): Promise<PostModel[]> {
+    await this.simulateWait();
+
+    console.group('\n', 'findAllPublic', '\n');
+    const posts = await this.readFromDisk();
+    return posts;
+  }
 }
 //exportação da instancia.
 
