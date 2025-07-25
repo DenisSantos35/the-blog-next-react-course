@@ -1,3 +1,4 @@
+import { revalidateExamplesAction } from '@/actions/revalidate-examples';
 import { formatHour } from '@/utils/format-datetime';
 // import { revalidatePath, revalidateTag } from 'next/cache';
 //esta pagina é dinamica, ou seja, ela é renderizada no servidor a cada requisição, mantendo a funcionalidade de dinamismo mesmo após o build.
@@ -27,6 +28,19 @@ export default async function ExampleDynamicPage({
       <div>
         Hora: {hour} id: {id}
       </div>
+      <form className='py-16' action={revalidateExamplesAction}>
+        <input
+          type='hidden'
+          name='path'
+          defaultValue={`/exemplo/${id}`}
+        ></input>
+        <button
+          className='bg-amber-500 text-white p-2 rounded hover:bg-amber-600 transition cursor-pointer'
+          type='submit'
+        >
+          REVALIDATE
+        </button>
+      </form>
     </main>
   );
 }
