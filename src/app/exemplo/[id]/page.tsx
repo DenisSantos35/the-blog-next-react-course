@@ -26,7 +26,7 @@ export default async function ExampleDynamicPage({
   return (
     <main className='min-h-[600px] text-xl font-bold'>
       <div>
-        Hora: {hour} id: {id}
+        Hora: {hour} (ID: {id})
       </div>
       <form className='py-16' action={revalidateExamplesAction}>
         <input
