@@ -23,10 +23,20 @@ export default async function ExampleDynamicPage({
   const { id } = await params;
   const hour = formatHour(Date.now());
 
+  const response = await fetch('https://randomuser.me/api/?results=1', {
+    //cache: 'no-store', // para não usar cache, sempre buscar a informação mais recente
+    next: {
+      tags: [`randomuser`], // para revalidar a página, use o mesmo tag
+      revalidate: 10, // revalidar a cada 10 segundos
+    },
+  });
+  const json = await response.json();
+  const name = json.results[0].name.first;
+
   return (
     <main className='min-h-[600px] text-xl font-bold'>
       <div>
-        Hora: {hour} (ID: {id})
+        Name: {name} | Hora: {hour} (ID: {id})
       </div>
       <form className='py-16' action={revalidateExamplesAction}>
         <input
