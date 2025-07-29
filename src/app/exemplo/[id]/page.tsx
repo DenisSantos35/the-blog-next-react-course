@@ -1,10 +1,11 @@
 import { revalidateExamplesAction } from '@/actions/revalidate-examples';
-import { formatHour } from '@/utils/format-datetime';
+import { formatHourCached } from '@/utils/format-datetime';
+
 // import { revalidatePath, revalidateTag } from 'next/cache';
 //esta pagina é dinamica, ou seja, ela é renderizada no servidor a cada requisição, mantendo a funcionalidade de dinamismo mesmo após o build.
 //SSG -> static side generation, gera uma pagina estatica, mas com a funcionalidade de dinamismo.
-export const dynamic = 'force-static'; // == export async function generateStaticParams() { return []; }
-export const revalidate = 10;
+// export const dynamic = 'force-static'; // == export async function generateStaticParams() { return []; }
+// export const revalidate = 10;
 //export const dynamicParams = true;
 // export async function generateStaticParams() {
 //   return [{ id: '1' }, { id: '2' }];
@@ -20,23 +21,15 @@ export default async function ExampleDynamicPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const hour = formatHour(Date.now());
+ 
 
-  const response = await fetch('https://randomuser.me/api/?results=1', {
-    //cache: 'no-store', // para não usar cache, sempre buscar a informação mais recente
-    next: {
-      tags: [`randomuser`], // para revalidar a página, use o mesmo tag
-      revalidate: 10, // revalidar a cada 10 segundos
-    },
-  });
-  const json = await response.json();
-  const name = json.results[0].name.first;
+  const { id } = await params;
+  const hour = await formatHourCached();
 
   return (
     <main className='min-h-[600px] text-xl font-bold'>
       <div>
-        Name: {name} | Hora: {hour} (ID: {id})
+         Hora: {hour} (ID: {id})
       </div>
       <form className='py-16' action={revalidateExamplesAction}>
         <input

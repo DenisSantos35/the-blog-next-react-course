@@ -51,3 +51,14 @@ for more details.
 ## PACOTES ADICIONADOS
 
 npm i date-fns //para datas
+
+## USO DE FETCH COM TAG
+// const response = await fetch('https://randomuser.me/api/?results=1', {
+  //   //cache: 'no-store', // para não usar cache, sempre buscar a informação mais recente
+  //   next: {
+  //     tags: [`randomuser`], // para revalidar a página, use o mesmo tag
+  //     revalidate: 10, // revalidar a cada 10 segundos
+  //   },
+  // });
+  // const json = await response.json();
+  // const name = json.results[0].name.first;
