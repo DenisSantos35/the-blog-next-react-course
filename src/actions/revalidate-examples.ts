@@ -11,5 +11,6 @@ export async function revalidateExamplesAction(formData: FormData) {
   console.log('Estou em uma Server Action', path);
 
   // revalidatePath(`${path}`);
-  revalidateTag('formatHourCached'); // revalida a tag especificada, que é usada na página para cache
+  revalidateTag('posts'); //home revalida a tag especificada, que é usada na página para cache
+  revalidateTag('post-dicas-para-manter-a-saude-mental-em-dia');
 }
