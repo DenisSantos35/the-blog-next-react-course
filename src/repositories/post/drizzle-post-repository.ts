@@ -1,10 +1,11 @@
 import { PostModel } from '@/models/post/post-model';
 import { PostRepository } from './post-repository';
 import { drizzleDb } from '@/db/drizzle';
+import { logColor } from '@/utils/log-color';
 
 export class DrizzePostRepository implements PostRepository {
   async findAllPublic(): Promise<PostModel[]> {
-    console.log('D findAllPublic');
+    logColor('findAllPublic', Date.now());
     const posts = drizzleDb.query.posts.findMany({
       orderBy: (posts, { desc }) => desc(posts.createdAt),
       where: (posts, { eq }) => eq(posts.published, true),
@@ -13,7 +14,7 @@ export class DrizzePostRepository implements PostRepository {
     return posts;
   }
   async findBySlugPublic(slug: string): Promise<PostModel> {
-    console.log('findBySlugPublic');
+    logColor('findBySlugPublic', Date.now());
     const post = await drizzleDb.query.posts.findFirst({
       where: (posts, { eq, and }) =>
         and(eq(posts.published, true), eq(posts.slug, slug)),
@@ -24,7 +25,7 @@ export class DrizzePostRepository implements PostRepository {
     return post;
   }
   async findAll(): Promise<PostModel[]> {
-    console.log('findAll');
+    logColor('findAll', Date.now());
     const posts = await drizzleDb.query.posts.findMany({
       orderBy: (posts, { desc }) => desc(posts.createdAt),
     });
@@ -32,7 +33,7 @@ export class DrizzePostRepository implements PostRepository {
     return posts;
   }
   async findById(id: string): Promise<PostModel> {
-    console.log('findById');
+    logColor('findById', Date.now());
     const post = await drizzleDb.query.posts.findFirst({
       where: (posts, { eq }) => eq(posts.id, id),
     });

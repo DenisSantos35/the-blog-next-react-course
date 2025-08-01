@@ -13,7 +13,7 @@ export default async function AdminPostPage() {
     <div className='py-16 '>
       {post.map(post => {
         return <p key={post.id}>{post.title}</p>;
-      })}{' '}
+      })}
     </div>
   );
 }
