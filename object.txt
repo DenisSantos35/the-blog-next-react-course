@@ -1,0 +1,20 @@
+{
+  '$ACTION_REF_1': '',
+  '$ACTION_1:0': '{"id":"602310506042a28392bd0fc96d3e7f35bc3dc0ae2d","bound":"$@1"}',
+  '$ACTION_1:1': '[{"formState":{"id":"afa086e4-53e4-492d-acf2-7c2966d83fcd","slug":"dicas-para-manter-a-saude-mental-em-dia","title":"Dicas para manter a saúde mental em dia","excerpt":"Em vez de configurar tudo manualmente, basta criar um arquivo com o nome certo e o Next.js entende que aquilo representa uma página.","author":"Marina Duarte","content":"Em vez de configurar tudo manualmente, basta criar um arquivo com o nome certo e o Next.js entende que aquilo representa uma página.","coverImageUrl":"/images/bryen_6.png","createdAt":"2025-04-07T00:24:38.616Z","published":true},"errors":[]}]',
+  '$ACTION_KEY': 'k3543892799',
+  id: 'afa086e4-53e4-492d-acf2-7c2966d83fcd',
+  slug: 'dicas-para-manter-a-saude-mental-em-dia',
+  author: 'Marina Duarte',
+  title: 'Dicas para manter a saúde mental em dia',
+  excerpt: 'Em vez de configurar tudo manualmente, basta criar um arquivo com o nome certo e o Next.js entende que aquilo representa uma página.',
+  content: 'Em vez de configurar tudo manualmente, basta criar um arquivo com o nome certo e o Next.js entende que aquilo representa uma página.',
+  file: File {
+    size: 0,
+    type: 'application/octet-stream',
+    name: 'undefined',
+    lastModified: 1759404785410
+  },
+  coverImageUrl: '/images/bryen_6.png'
+}
+null
