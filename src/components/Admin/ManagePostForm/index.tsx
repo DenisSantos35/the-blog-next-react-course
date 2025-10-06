@@ -8,6 +8,7 @@ import {  useActionState, useEffect, useState } from 'react';
 import { ImageUploader } from '../imageUploader';
 import { makePartialPublicPost, PublicPost } from '@/dto/post/dto';
 import { createPostAction } from '@/actions/post/create-post-action';
+import { toast } from 'react-toastify';
 
 type ManagePostFormProps = {
   publicPost?: PublicPost;
@@ -20,7 +21,12 @@ export function ManagePostForm({publicPost}:ManagePostFormProps) {
     errors: [],   
   };
   const [state, action, isPending ] = useActionState(createPostAction, initialState)
-
+  useEffect(()=>{
+    if(state.errors.length > 0){
+      toast.dismiss();
+      state.errors.forEach(err => toast.error(err));
+    }
+  }, [state.errors] );
   const { formState } = state;
 
   return (
