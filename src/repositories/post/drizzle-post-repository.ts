@@ -4,8 +4,11 @@ import { drizzleDb } from '@/db/drizzle';
 import { logColor } from '@/utils/log-color';
 import { asyncDelay } from '@/utils/async-delay';
 import { SIMULATE_WAIT_IN_MS } from '@/lib/constants';
+import { postTable } from '@/db/drizzle/schemas';
+import { eq } from 'drizzle-orm';
 
 export class DrizzePostRepository implements PostRepository {
+  
   async findAllPublic(): Promise<PostModel[]> {
     await asyncDelay(SIMULATE_WAIT_IN_MS, true);
     logColor('findAllPublic', Date.now());
@@ -48,9 +51,60 @@ export class DrizzePostRepository implements PostRepository {
 
     return post;
   }
+
+  async create(post: PostModel): Promise<PostModel> {
+    const postExists = await drizzleDb.query.posts.findFirst({
+      where: (posts, { or, eq }) => or(eq(posts.id, post.id), eq(posts.slug, post.slug)),
+      columns: {id: true}
+    });
+
+    if(!!postExists){
+      throw new Error('Post com ID ou Slug já existe na base de dados');
+    }
+    
+    await drizzleDb.insert(postTable).values(post);
+    return post;
+  } 
+
+  async delete(id: string): Promise<PostModel>{
+    const post = await drizzleDb.query.posts.findFirst({
+      where: (posts, { eq }) => eq(posts.id, id),
+    });
+
+    if (!post) throw new Error('Post não existe');
+
+    await drizzleDb.delete(postTable).where(eq(postTable.id, id));
+
+    return post;
+  }
+
+  async update(id: string, newPostData: Omit<PostModel, 'id' | 'slug' | 'createdAt' | 'updatedAt'>): Promise<PostModel> {
+    const oldPost = await drizzleDb.query.posts.findFirst({
+      where: (posts, { eq }) => eq(posts.id, id),
+    });
+
+    if (!oldPost) throw new Error('Post não existe');
+
+    const updatedAt = new Date().toISOString();
+    const postData = {
+      author: newPostData.author,
+      content: newPostData.content,
+      coverImageUrl: newPostData.coverImageUrl,
+      excerpt: newPostData.excerpt,
+      published: newPostData.published,
+      title: newPostData.title,
+      updatedAt,
+    };
+    await drizzleDb.update(postTable).set(postData).where(eq(postTable.id, id));
+
+    return {
+      ...oldPost,
+      ...postData,     
+    }
+  }
 }
 
-(async () => {
+//(async () => {
   //   o que for necessário. true
   // o Next.js já vem com várias decisões prontas, permitindo que você comece a desenvolver mais rapidamente. false
   //   9eb8b7ac-2b48-4835-880a-a1c798e1a595 true
@@ -60,4 +114,4 @@ export class DrizzePostRepository implements PostRepository {
   // posts.forEach(post => console.log(post.id, post.published));
   // const post = await repo.findBySlugPublic('o que for necessário.');
   // console.log(post);
-})();
+//})();
