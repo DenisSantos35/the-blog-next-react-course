@@ -3,6 +3,7 @@ import { makePartialPublicPost, PublicPost } from "@/dto/post/dto"
 import { PostCreateSchema } from "@/lib/post/validations";
 import { PostModel } from "@/models/post/post-model";
 import { postRepository } from "@/repositories/post";
+import { asyncDelay } from "@/utils/async-delay";
 import { getzodErrorMessages } from "@/utils/get-zod-error-messages";
 import { makeSlugFromText } from "@/utils/make-slug-from-text";
 import { revalidateTag } from "next/cache";
@@ -12,11 +13,13 @@ import { v4 as uuidV4 } from 'uuid';
 type CreatPostActionState = {
   formState: PublicPost,
   errors: string[],
-  success?: true,
+  success?: string,
 }
 export async function createPostAction(prevState: CreatPostActionState, formData: FormData): Promise<CreatPostActionState>{
  
   //TODO: verificar se o usuario esta logado
+
+  await asyncDelay(3000);
   if(!(formData instanceof FormData)){
     return {
       formState: prevState.formState,
@@ -62,5 +65,5 @@ export async function createPostAction(prevState: CreatPostActionState, formData
   }
 
    revalidateTag('posts');
-   redirect(`/admin/post/${newPost.id}`);
+   redirect(`/admin/post/${newPost.id}?created=1`);
 }
