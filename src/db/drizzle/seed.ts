@@ -10,7 +10,6 @@ import { postTable } from './schemas';
   const jsonRepository = new JsonPostRepository();
   const posts = await jsonRepository.findAll();
 
-  console.log(`${posts.length} posts forma salvos na vase de dados.`);
 
   try {
     //inserir todos os dados no banco de dados usando o schema postTable e os dados retornados de posts

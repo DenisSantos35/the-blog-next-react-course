@@ -1,5 +1,5 @@
 'use client';
-//TODO: componente e seus dependentes importados dentro de uma pagina use client se torna um client component
+
 import ErrorMessage from '@/components/ErrorMessage';
 import { useEffect } from 'react';
 
