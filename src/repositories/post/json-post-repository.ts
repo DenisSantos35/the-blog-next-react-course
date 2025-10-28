@@ -2,7 +2,9 @@ import { PostModel } from '@/models/post/post-model';
 import { PostRepository } from './post-repository';
 import { resolve } from 'path';
 import { readFile, writeFile } from 'fs/promises';
-import { SIMULATE_WAIT_IN_MS } from '@/lib/constants';
+
+
+const simulateWaitMs = Number(process.env.SIMULATE_WAIT_IN_MS) || 0;
 
 //pegando dados da raiz do projeto => C:\Users\rudye\Desktop\blog
 const ROOT_DIR = process.cwd();
@@ -67,8 +69,8 @@ export class JsonPostRepository implements PostRepository {
     return newPost;
   }
   private async simulateWait() {
-    if (SIMULATE_WAIT_IN_MS <= 0) return;
-    await new Promise(resolve => setTimeout(resolve, SIMULATE_WAIT_IN_MS));
+    if (simulateWaitMs <= 0) return;
+    await new Promise(resolve => setTimeout(resolve, simulateWaitMs));
   }
   //método privado só é enchegado pela classe
   private async readFromDisk(): Promise<PostModel[]> {
