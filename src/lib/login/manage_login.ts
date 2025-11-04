@@ -13,6 +13,6 @@ export async function verifyPassword(password: string, base64Hash: string) {
 }
 
 (async() => {
-  const isPasswordValid = await verifyPassword('Jd', 'JDJiJDEwJFpMWnZKamVhUzkzNFpGNUptMS5lOGUvU3ZaY1diMW1GbHE1bzZVb0hEVXA0dy9ZZjBHUzcy');
+  const isPasswordValid = await verifyPassword('Jd14409696*', 'JDJiJDEwJFpMWnZKamVhUzkzNFpGNUptMS5lOGUvU3ZaY1diMW1GbHE1bzZVb0hEVXA0dy9ZZjBHUzcy');
   console.log({isPasswordValid});
 })()
