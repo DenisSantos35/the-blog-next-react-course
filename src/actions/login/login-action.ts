@@ -1,7 +1,9 @@
 'use server';
 
-import { verifyPassword } from "@/lib/login/manage_login";
+import { creatLoginSession, verifyPassword } from "@/lib/login/manage_login";
 import { asyncDelay } from "@/utils/async-delay";
+import { redirect } from "next/navigation";
+
 
 type LoginActionState = {
   username: string;
@@ -40,13 +42,7 @@ export async function loginAction(state: LoginActionState, formData: FormData){
     }
   }
 
-  //  Aqui o usuário e senha são válidos
-
-  //Criar o cookie e redirecionar a página
-
-  return {
-    username: '',
-    error: 'USUÁRIO LOGADO COM SUCESSO',
-  }
+  await creatLoginSession(username);
+  redirect('/admin/post');
 
 }
