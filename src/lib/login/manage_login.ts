@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { SignJWT, jwtVerify } from "jose";
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 const jwtEncodeKey = new TextEncoder().encode(jwtSecretKey);
@@ -7,6 +8,11 @@ const jwtEncodeKey = new TextEncoder().encode(jwtSecretKey);
 const loginExpSeconds = Number(process.env.LOGIN_EXPIRATION_SECONDS) || 86400;
 const loginExpStr = process.env.LOGIN_EXPIRATION_STRING || '1d'
 const loginCookieName = process.env.LOGIN_COOKIE_NAME || 'loginSession'
+
+type JwtPayload = {
+  username: string;
+  expiresAt: Date;
+}
 
 export async function hashPassword(password: string) {
   const hash = await bcrypt.hash(password, 10);
@@ -22,7 +28,7 @@ export async function verifyPassword(password: string, base64Hash: string) {
 
 export async function creatLoginSession(username: string){
   const expiresAt = new Date(Date.now() + loginExpSeconds * 1000);
-  const loginSession = username + 'Qualquer coisa';
+  const loginSession = await signJwt({username, expiresAt});
   const cookiesStore = await cookies();
 
   cookiesStore.set(loginCookieName, loginSession, {
@@ -40,6 +46,13 @@ export async function deleteLoginSession(){
 }
 
 
+export async function signJwt(jwtPayload: JwtPayload) {
+  return new SignJWT(jwtPayload)
+    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' ,})
+    .setIssuedAt()
+    .setExpirationTime(loginExpStr)
+    .sign(jwtEncodeKey);
+}
 
 // (async() => {
 //   const isPasswordValid = await verifyPassword('Jd14409696*', 'JDJiJDEwJFpMWnZKamVhUzkzNFpGNUptMS5lOGUvU3ZaY1diMW1GbHE1bzZVb0hEVXA0dy9ZZjBHUzcy');
