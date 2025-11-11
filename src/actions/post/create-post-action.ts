@@ -1,5 +1,6 @@
 'use server'
 import { makePartialPublicPost, PublicPost } from "@/dto/post/dto"
+import { verifyLoginSession } from "@/lib/login/manage_login";
 import { PostCreateSchema } from "@/lib/post/validations";
 import { PostModel } from "@/models/post/post-model";
 import { postRepository } from "@/repositories/post";
@@ -15,8 +16,8 @@ type CreatPostActionState = {
   success?: string,
 }
 export async function createPostAction(prevState: CreatPostActionState, formData: FormData): Promise<CreatPostActionState>{
- 
-  //TODO: verificar se o usuario esta logado
+
+  const isAuthenticated = await verifyLoginSession();
 
   if(!(formData instanceof FormData)){
     return {
@@ -27,6 +28,13 @@ export async function createPostAction(prevState: CreatPostActionState, formData
 
   const formDataToObj = Object.fromEntries(formData.entries()); 
   const zodParseObj = PostCreateSchema.safeParse(formDataToObj);
+
+  if(!isAuthenticated){
+    return {
+      formState: makePartialPublicPost(formDataToObj),
+      errors: ['Faça login em outra aba antes de salvar.'],
+    }
+  }
 
   if(!zodParseObj.success){
     const errors = getzodErrorMessages( zodParseObj.error.format());
