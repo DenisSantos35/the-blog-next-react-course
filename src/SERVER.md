@@ -97,10 +97,67 @@ Comandos para iniciar o site do zero:
         -- ssh nomeusuario@dominio.com.br
          - vai entrar no servidor
          **Agora vamos configurar o servidor**
-            **comandos**
+            **comandos terminal**
               - acessar: ssh nomeusuario@dominio.com.br
               - sair: exit ou ctrl + C
               - reiniciar o server: sudo reboot
+            
+  **inicializar servidor**
+
+```sh
+  ssh nomeusuario@dominio.com.br
+  - rodar 
+  sudo apt update -y
+  sudo apt upgrade -y
+
+  Caso no servidor não estiver git instalado rodar:
+  sudo apt install git
+```
+
+Git
+
+```sh
+  ssh-keygen # (enter, enter, enter)
+  #ACESSAR A PASTA DENTRO DO SERVIDOR
+  ls ~ # acessa a pasta principal home
+  ls -lah #lista todas as pastas ocultas
+  cat .ssh/id_ed25519.pub # vai mostrar a chave publica.(COPIA A CHAVE  E COLOCA NAS SUAS CHAVES SSH DO GITHUB)
+
+  #Após copiado va ao repositório git hub e acesse
+   #-seetings - deploy keeys - Add deploy keys 
+   # e cola a chave no campo onde esta key, e clica em add keys
+
+   # Após colocar a key ssh retornar no code do git hub, e copiar o link que consta ssh
+
+  git clone ENDERECO_SSH NOME_DA_PASTA
+  # Ao rodar este comando voce clonara o projeto para dentro do servidor
+  # para ver o projeto rodar
+  ls -lah #lista todas as pastas ocultas
+```
+
+**instalar no servidor NVM E NODE**
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+#Sair e entrar novamente para atualizar as váriaveis
+nvm install --lts
+node --version #só para conferir a instalação
+npm -g install npm@latest
+```
+Comandos para iniciar o site do zero:
+ ```sh
+ # Ter o node instalado
+ # instalar todos os pacotes
+  npm i 
+# configure o .env.local
+  npm run migrate
+
+  npm run seed # Seed é opcional
+
+# build do next
+  npm run build
+  npm start # apenas paa teste
+ ```
 
 
 
