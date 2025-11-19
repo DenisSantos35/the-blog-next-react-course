@@ -146,6 +146,8 @@ npm -g install npm@latest
 ```
 Comandos para iniciar o site do zero:
  ```sh
+ # entrar na pasta que esta o site
+ cd theblog
  # Ter o node instalado
  # instalar todos os pacotes
   npm i 
@@ -159,6 +161,38 @@ Comandos para iniciar o site do zero:
   npm start # apenas paa teste
  ```
 
+ Sua senha
+ ```sh
+ # NO SEU COMPUTADOR, COLOQUE A SENHA NO generate-hashed-password.ts
+ npx tsx src/utils/generate-hashed-password.ts
+ #APAGUE A SENHA E SALVE O ARQUIVO
+ ```
+Configurando o .env.local
+```sh
+# DICA: é mais fácil editar esse arquivo no seu computador e colar no servidor
+cd pasta_do_projeto
+cp .env-example .env.local
+nano .env.local
+# Ajuste variáveis de ambiente se precisar (ctrl + o / ctrl + x)
+```
+
+Se tiver tudo certo, podemos rodar uma build para teste
+```sh
+cd pasta_do_projeto
+npm run build
+npm start
+```
+
+Se rodou tudo bonitinho
+```sh
+sudo nano /etc/ngnix/sites-avaible/meu_subdominio (example:theblog.otaviomiranda.com.br)
+```
+
+Edita os dados abaixo:\
+`theblog.otaviomiranda.com.br`\
+Se voce mudou a porta da aplicação, mude `3000`para o número que escolheu.
+Também ajuste os caminhos `/home/luizotavio/theblog/public` e 
+`/home/luizotavio/theblog/public/uploads/`
 
 
 
