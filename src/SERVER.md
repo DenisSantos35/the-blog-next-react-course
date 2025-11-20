@@ -183,8 +183,21 @@ npm run build
 npm start
 ```
 
-Se rodou tudo bonitinho
+Se rodou tudo bonitinho, vamos para o Nginx
 ```sh
+sudo apt install nginx -y #Só isso ja deve subir algo na porta 80
+# apos dentro do servidor acessr 
+ls /etc/nginx/sites-available/
+ls /etc/nginx/sites-enabled/
+# vai aparecer uma pasta default
+# apagar esta pasta
+sudo rm /etc/nginx/sites-enabled/default
+
+```
+
+Configurando para por 80 - (Meu dominio: theblog.otaviomiranda.com.br)
+```sh
+# aqui vamos criar o site dentro do nginx
 sudo nano /etc/ngnix/sites-avaible/meu_subdominio (example:theblog.otaviomiranda.com.br)
 ```
 
@@ -194,6 +207,58 @@ Se voce mudou a porta da aplicação, mude `3000`para o número que escolheu.
 Também ajuste os caminhos `/home/luizotavio/theblog/public` e 
 `/home/luizotavio/theblog/public/uploads/`
 
+server {
+  listen 80;
+  server_name theblog.otaviomiranda.com.br;
+
+  #Desativa buffer para suportar Streaming e Suspense do Next.js
+  proxy_buffering off;
+  proxy_set_header X-Accel-Bufering no;
+
+  #Servir arquivos estáticos do /public
+  location /public/ {
+    alias /home/denis/theblog/public;
+  }
+
+  # Servi arquivos estaticos do /public/uploads
+  location /uploads/ {
+    alias /hom/denis/theblog/public/uploads/;
+  }
+
+  #Resto do tráfego passa pro app Node (Next.js)
+  location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarder-For $proxy_add_x_forwarder_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    #Permitir Websocket (caso use algum no futuro)
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  location /_next/ {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarder-For $proxy_add_x_forwarder_for;
+    proxy_set_header X-Forwarded-Proto $scheme;    
+  }
+}
+
+Salva o arquivo (ctrl + o / ctrl + x) e vamos criar um link simbólico para pasta sites-enabled (é ela que ativa os sites):
+
+```sh
+sudo rm /etc/nginx/sites-enabled/default # Apaga o site default que o nginx ativou
+sudo ln -s /etc/nginx/sites-avaible/theblog.otaviomiranda.com.br /etc/nginx/sites-enabled/
+sudo nginx -t #confere se está tudo certo
+sudo systemctl reload nginx
+npm start
+```
 
 
 
