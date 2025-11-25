@@ -259,8 +259,174 @@ sudo nginx -t #confere se está tudo certo
 sudo systemctl reload nginx
 npm start
 ```
+Agora bora instalar o certbot para quem tem dominio (não vai funcionar se tu não tem dominio)
+```sh
+  sudo apt install certbot python3-certbot-nginx -y
+  sudo certbot --nginx -d theblog.otaviomiranda.com.br
+  sudo nginx -t #confere se tá tudo certo
+  sudo systemctl reload nginx
+```
+
+Eu tive alguns problemas de permissões quando fiz a configuração, tive que dar permissão a pasta da raiz do projeto até a pasta uploads, assim (mas teste primeiro para saber se precisa).
+O mais simples mesmo é mudar o usuário do Nginx de www-data para seu nome de usuário:
+
+```sh
+sudo chmod o+x /home #primeiro na home (até chegar em uploads)
+sudo chmod o+x /home/luizotavio
+sudo chmod o+x /home/luizotavio/theblog
+sudo chmod o+x /home/luizotavio/theblog/public
+# Só aqui fiz recursão para evitar mudar todos os arquivos do projeto
+sudo chmod -R o+rx /home/luizotavio/theblog/public/uploads
+```
+
+Agora vamos usar o pm2 para manter o app sempre abero e iniciando junto com o sistema caso a gente reinicie
+```sh
+  npm install -g pm2
+  pm2 start --name theblog -- start #
+  pm2 save
+  pm2 startup #Copia  e cola o resultado desse comando e pressiona ENTER
+  pm2 save # Só para garantir
+
+  # Ver
+  pm2 list #listar
+  pm2 restart theblog # reinicia
+  pm2 stop thebolg #parar
+  pm2 start theblog # inicia
+  pm2 log theblog # veja o log do next (important para debug)
+
+  # O sqlite não lida muito bem com cluster (várias instâncias do node rodando ao mesmo tempo)
+  # mas se você trocar a base de dados, para postegreSQL, MySQL, etx, use os comandos abaixo:
+  pm2 delete theblog # reinicia
+  pm2 start npm --name the blog -- start -i max # modo cluster, 1 instância por core do processador
+  pm2 save
+```
+Depois de fazer todas as configurações, meu arquivo final do NGinx ficou assim
 
 
+#############################################
+# BLOCO HTTPS – Site principal (porta 443) #
+#############################################
+
+server {
+  server_name theblog.otaviomiranda.com.br;
+
+  # (opcional) Define o caminho raiz do projeto – Next.js não usa diretamente, mas não atrapalha
+  root /home/luizotavio/theblog;
+
+  # Desativa buffer de proxy – necessário para funcionar corretamente o Streaming e Suspense no Next.js
+  proxy_buffering off;
+  proxy_set_header X-Accel-Buffering no;
+
+  # --- SEGURANÇA BÁSICA ---
+
+  # Oculta a versão do NGINX no header "Server"
+  server_tokens off;
+
+  # Bloqueia acesso a arquivos ocultos (ex: .env, .git, etc)
+  location ~ /\. {
+    deny all;
+  }
+
+  # Bloqueia acesso a arquivos sensíveis por extensão
+  location ~* \.(sql|bak|zip|tar|gz|env|log)$ {
+    deny all;
+  }
+
+  # Permite apenas métodos HTTP comuns (evita ataque com métodos como DELETE, OPTIONS, etc)
+  if ($request_method !~ ^(GET|POST|HEAD)$ ) {
+    return 444;
+  }
+
+  # Headers de segurança
+  add_header X-Content-Type-Options nosniff;
+  add_header X-Frame-Options SAMEORIGIN;
+  add_header X-XSS-Protection "1; mode=block";
+  charset utf-8;
+
+  # --- LOGS ---
+  access_log /var/log/nginx/theblog.access.log;
+  error_log /var/log/nginx/theblog.error.log;
+
+  # --- GZIP ---
+  gzip on;
+  gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+  # --- ROTAS DO NEXT.JS ---
+
+  # SOMENTE os IPs abaixo podem acessar /admin
+  location /admin {
+    allow 123.123.123.123; # IP permitido
+    allow 123.123.123.124; # IP permitido
+    allow 192.168.0.0/24; # Rede inteira permitida
+    allow 187.108.118.0/24; # Rede inteira permitida
+    deny all;
+
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+  }
+
+  # Arquivos internos do Next.js (chunks, css, etc)
+  location /_next/ {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
+  # Arquivos públicos acessíveis diretamente, como imagens
+  location /public/ {
+    alias /home/luizotavio/theblog/public/;
+  }
+
+  # Pasta de uploads – acessível diretamente. IMPORTANTE: qualquer rota "/uploads" do Next será ignorada
+  location /uploads/ {
+    alias /home/luizotavio/theblog/public/uploads/;
+  }
+
+  # Todas as outras rotas passam para o servidor Next.js (SSR)
+  location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # Suporte a WebSocket (caso use no futuro)
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+  }
+
+  # --- HTTPS (SSL) ---
+  listen 443 ssl; # managed by Certbot
+  ssl_certificate /etc/letsencrypt/live/theblog.otaviomiranda.com.br/fullchain.pem; # managed by Certbot
+  ssl_certificate_key /etc/letsencrypt/live/theblog.otaviomiranda.com.br/privkey.pem; # managed by Certbot
+  include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+#############################################
+# BLOCO HTTP – Redirecionamento (porta 80) #
+#############################################
+
+server {
+  # Redireciona todo tráfego HTTP para HTTPS
+  if ($host = theblog.otaviomiranda.com.br) {
+    return 301 https://$host$request_uri;
+  } # managed by Certbot
+
+  listen 80;
+  server_name theblog.otaviomiranda.com.br;
+  return 404; # fallback se algo passar sem redirecionar
+}
 
 
 
