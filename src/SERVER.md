@@ -428,11 +428,63 @@ server {
   return 404; # fallback se algo passar sem redirecionar
 }
 
+Se quiser fazer um scriptzinho besta que faz pull automaticamente no seu servidor pra você e já reinicia os servidores:
 
+```sh
+  nano ~/refresh-theblog.sh
+```
+Cola isso no arquivo ajustando os caminhos para seu servidor
 
+```sh
+  #!/bin/bash
 
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+  echo "cd /home/luizotavio/theblog"
+  cd /home/luizotavio/theblog
+  echo
 
+  echo "Executando: git pull origin main"
+  git pull origin main
+  echo
+
+  echo "Executando: npm run build"
+  npm run build
+
+  echo "Executando: pm2 restart theblog"
+  pm2 restart theblog
+  echo
+
+  echo "sudo systemctl restart nginx"
+  sudo systemctl restart nginx
+  echo
+```
+
+Salve com ctrl + o / ctrl + x
+Mude as permissões do arquivo para permitir execução
+
+```sh
+  sudo chmod +x ~/refresh-theblog.sh
+```
+
+Agora, do seu computador você pode executar o seguinte comando mudando os dados para o seu servidor (usuário, domínio ou ip, nome do arquivo):
+
+```sh
+  ssh luizotavio@theblog.otaviomiranda.com.br './refresh-theblog.sh'
+```
+
+Esse comando entra na pasta do projeto, executa "git pull" para puxar as alterações do github, reinicia o pm2 e o nginx. As alterações já devem estar visíveis se não houve nenhum erro. Sempre que fizer alterações no projeto, testar bonitinho e fizer o push para o github, roda o comando e ele atualiza o site para você.
+
+Se o timezone do servidor estiver incorreto, você pode conferir com o comando:
+
+```sh
+  timedatectl # Confira seu timezone atual. Meu:  Time zone: Etc/UTC (UTC, +0000)
+  # encontre seu timezone, abaixo estou buscando por America/Sao_Paulo
+  timedatectl list-timezones | grep Sao_Paulo # Saída: America/Sao_Paulo (Nome preciso)
+  sudo timedatectl set-timezone America/Sao_Paulo # Altere
+  timedatectl # Confira - Time zone: America/Sao_Paulo (-03, -0300)
+```
 
 
     
